@@ -148,6 +148,7 @@ function static_custom_css_text_write($form_url){
 		$escaped_new_lines = str_replace("\n", $new_line_substitute, $_POST['csstext']);
 		$sanitised = sanitize_text_field($escaped_new_lines);
 		$csstext = str_replace($new_line_substitute, "\n", $sanitised);
+		$csstext = stripslashes($csstext);
 		
     $form_fields = array('csstext'); // Fields that should be preserved across screens
     $method = ''; // Leave this empty to perform test for 'direct' writing
