@@ -2,20 +2,14 @@
 /*
 Plugin Name: Static Custom CSS
 Description: Add custom CSS to a static file that can be cached & minified to enable faster page load speeds.
-Version: 1.0
+Version: 1.1
 Author: Joe Ogden
 Author URI: https://www.joeogden.com
 */
 
-
-
-// Used in the path
-$plugin_name = 'static-custom-css';
-
 // Function to enqueue stylesheets
 function static_custom_css_enqueue_style() {	
-	global $plugin_name;
-	wp_enqueue_style('static-custom-css-style', "".plugins_url()."/".$plugin_name."/style.css", false); 
+	wp_enqueue_style('static-custom-css-style', plugin_dir_url(__FILE__)."style.css", false); 
 }
 
 /*
@@ -104,7 +98,7 @@ $output = esc_textarea($output); // Escaping for printing
  * @param array $fields - fileds of $_POST array that should be preserved between screens
  * @return bool/str - false on failure, stored text on success
  **/
-function filesystem_init($form_url, $method, $context, $fields = null) {
+function static_custom_css_filesystem_init($form_url, $method, $context, $fields = null) {
     global $wp_filesystem;
     
     
@@ -139,7 +133,6 @@ function filesystem_init($form_url, $method, $context, $fields = null) {
  **/
 function static_custom_css_text_write($form_url){
     global $wp_filesystem;
-    global $plugin_name;
     
     check_admin_referer('static_custom_css_screen');
     
@@ -152,11 +145,11 @@ function static_custom_css_text_write($form_url){
 		
     $form_fields = array('csstext'); // Fields that should be preserved across screens
     $method = ''; // Leave this empty to perform test for 'direct' writing
-    $context = WP_PLUGIN_DIR . '/'.$plugin_name.''; // Target folder
+    $context = plugin_dir_path(__FILE__); // Target folder
             
     $form_url = wp_nonce_url($form_url, 'static_custom_css_screen'); // Page url with nonce value
     
-    if(!filesystem_init($form_url, $method, $context, $form_fields))
+    if(!static_custom_css_filesystem_init($form_url, $method, $context, $form_fields))
         return false; // Stop further processing when request form is displaying
     
     
@@ -185,15 +178,14 @@ function static_custom_css_text_write($form_url){
  **/
 function static_custom_css_text_read($form_url){
     global $wp_filesystem;
-    global $plugin_name;
 
     $csstext = '';
     
     $form_url = wp_nonce_url($form_url, 'static_custom_css_screen');
     $method = ''; // Leave this empty to perform test for 'direct' writing
-    $context = WP_PLUGIN_DIR . '/'.$plugin_name.''; // Target folder   
+    $context = plugin_dir_path(__FILE__); // Target folder
     
-    if(!filesystem_init($form_url, $method, $context))
+    if(!static_custom_css_filesystem_init($form_url, $method, $context))
         return false; // Stop further processign when request formis displaying
     
     
